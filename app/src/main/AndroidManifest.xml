@@ -16,7 +16,7 @@
         android:supportsRtl = "true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name="com.example.android.armed.MedInfoDisplayActivity"
+        <activity android:name="com.example.android.armed.MainActivity"
             android:label="Read Text">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

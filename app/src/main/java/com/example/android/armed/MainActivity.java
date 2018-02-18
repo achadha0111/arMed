@@ -57,8 +57,8 @@ import java.util.Locale;
  * rear facing camera. During detection overlay graphics are drawn to indicate the position,
  * size, and contents of each TextBlock.
  */
-public final class MedInfoDisplayActivity extends AppCompatActivity {
-    private static final String TAG = "MedInfoDisplayActivity";
+public final class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     // Intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
@@ -349,6 +349,7 @@ public final class MedInfoDisplayActivity extends AppCompatActivity {
                 Log.d(TAG, "text data is being spoken! " + text.getValue());
                 // Speak the string.
                 tts.speak(text.getValue(), TextToSpeech.QUEUE_ADD, null, "DEFAULT");
+
             }
             else {
                 Log.d(TAG, "text data is null");
