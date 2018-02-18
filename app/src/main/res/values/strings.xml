@@ -1,3 +1,24 @@
 <resources>
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Ocr dependencies cannot be downloaded due to low device storage</string>
+    <string name="title_activity_main">Ocr Detector Sample</string>
+    <string name="ocr_header">Click &quot;Detect Text&quot; to detect text</string>
+    <string name="read_text">Detect Text</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="ocr_success">Text read successfully</string>
+    <string name="ocr_failure">No text captured</string>
+    <string name="ocr_error">"Error reading text: %1$s"</string>
     <string name="app_name">ARMed</string>
+    <string name="medicine_name"/>
+    <string name="dosage"/>
+    <string name="common_symptoms"/>
+    <string name="side_effects"/>
+    <string name="scan_medicine"> Scan Medicine</string>
+    <string name="medicine_name_label"> Medicine Name:</string>
+    <string name="adult_dosage_label"> Adult Dosage:</string>
+    <string name="child_dosage_label"> Child Dosage:</string>
+    <string name="contraindications_label"> Avoid this medication if: </string>
 </resources>
