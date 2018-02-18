@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ARMed</string>
+    <string name="medicine_name"/>
+    <string name="dosage"/>
+    <string name="common_symptoms"/>
+    <string name="side_effects"/>
 </resources>
