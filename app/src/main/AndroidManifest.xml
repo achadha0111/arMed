@@ -27,6 +27,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MedInfoDisplayActivity"
+            android:label="Display search results">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -347,9 +347,12 @@ public final class MainActivity extends AppCompatActivity {
             text = graphic.getTextBlock();
             if (text != null && text.getValue() != null) {
                 Log.d(TAG, "text data is being spoken! " + text.getValue());
+                Intent mIntent = new Intent(this, MedInfoDisplayActivity.class);
+                mIntent.putExtra("drugName", text.getValue());
+                Log.i("Added intent", "true");
                 // Speak the string.
-                tts.speak(text.getValue(), TextToSpeech.QUEUE_ADD, null, "DEFAULT");
-
+               // tts.speak(text.getValue(), TextToSpeech.QUEUE_ADD, null, "DEFAULT");
+                startActivity(mIntent);
             }
             else {
                 Log.d(TAG, "text data is null");
