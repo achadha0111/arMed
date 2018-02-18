@@ -24,11 +24,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MedInfoDisplayActivity extends AppCompatActivity {
-    private String drugName;
     private String drugDosage;
     private String drugChildDosage;
-    private String drugCommonSymptoms;
-    private String drugSideEffects;
+    //private String drugCommonSymptoms;
+    //private String drugSideEffects;
     private String drugContraindications;
     TextView medicineNameView;
     TextView drugDosageView;
@@ -41,6 +40,7 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
     String drugRequested;
     Button newScan;
 
+    // Hook onto the UI elements else it will throw a null pointer error further down
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,22 +54,26 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
         newScan = findViewById(R.id.scanButton);
     }
 
+    // Receive the name of the medicine from the Google Vision API
     @Override
     protected void onStart() {
         super.onStart();
         Bundle extras = getIntent().getExtras();
 
+        // Drug Name
         drugRequested = (extras != null) ? extras.getString("drugName") : "ibuprofen";
 
+        // Construct URL
         queryUrl = queryUrl + drugRequested;
         queue = Volley.newRequestQueue(this);
 
+        // Run an async request for JSON data
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET,
                 queryUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d("Received some response", "true");
+
                     drugDosage = response.getString("Adult:");
                     drugChildDosage = response.getString("Children:");
                     drugContraindications = response.getString("Contraindications:");
@@ -103,7 +107,8 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("Started request", "true");
+
+        // Prevent retrying of requests
         jsonRequest.setRetryPolicy(
                 new DefaultRetryPolicy(20000, 0,
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

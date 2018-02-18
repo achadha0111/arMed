@@ -5,4 +5,8 @@
     <string name="common_symptoms"/>
     <string name="side_effects"/>
     <string name="scan_medicine"> Scan Medicine</string>
+    <string name="medicine_name_label"> Medicine Name:</string>
+    <string name="adult_dosage_label"> Adult Dosage:</string>
+    <string name="child_dosage_label"> Child Dosage:</string>
+    <string name="contraindications_label"> Avoid this medication if: </string>
 </resources>
