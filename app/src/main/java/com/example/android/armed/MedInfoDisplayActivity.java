@@ -1,23 +1,45 @@
 package com.example.android.armed;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MedInfoDisplayActivity extends AppCompatActivity {
     private String drugName;
     private String drugDosage;
+    private String drugChildDosage;
     private String drugCommonSymptoms;
     private String drugSideEffects;
+    private String drugContraindications;
     TextView medicineNameView;
     TextView drugDosageView;
     TextView drugCommonSymptomsView;
     TextView drugSideEffectsView;
     ProgressBar progressBar;
     CardView cardView;
+    RequestQueue queue;
+    String queryUrl = "https://c30de1e9.ngrok.io/medication/";
+    String drugRequested;
+    Button newScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +51,7 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
         drugSideEffectsView = findViewById(R.id.drugSideEffects);
         progressBar = findViewById(R.id.dataFetch);
         cardView = findViewById(R.id.medInfo);
+        newScan = findViewById(R.id.scanButton);
     }
 
     @Override
@@ -36,41 +59,54 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
         super.onStart();
         Bundle extras = getIntent().getExtras();
 
+        drugRequested = (extras != null) ? extras.getString("drugName") : "ibuprofen";
 
-        if (extras != null) {
+        queryUrl = queryUrl + drugRequested;
+        queue = Volley.newRequestQueue(this);
 
-           drugName = extras.getString("drugName");
-           drugDosage = extras.getString("drugDosage");
-           drugCommonSymptoms = extras.getString("drugCommonSymptoms");
-           drugSideEffects = extras.getString("drugSideEffects");
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET,
+                queryUrl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("Received some response", "true");
+                    drugDosage = response.getString("Adult:");
+                    drugChildDosage = response.getString("Children:");
+                    drugContraindications = response.getString("Contraindications:");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            medicineNameView.setText(drugRequested);
+                            drugDosageView.setText(drugDosage);
+                            drugCommonSymptomsView.setText(drugChildDosage);
+                            drugSideEffectsView.setText(drugContraindications);
 
-           runOnUiThread(new Runnable() {
-               @Override
-               public void run() {
-                    medicineNameView.setText(drugName);
-                    drugDosageView.setText(drugDosage);
-                    drugCommonSymptomsView.setText(drugCommonSymptoms);
-                    drugSideEffectsView.setText(drugSideEffects);
-
-                   progressBar.setVisibility(View.INVISIBLE);
-                   cardView.setVisibility(View.VISIBLE);
-               }
-           });
-
-
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    medicineNameView.setText("Avil");
-                    drugDosageView.setText("2 Pills/Day");
-                    drugCommonSymptomsView.setText("Allergies");
-                    drugSideEffectsView.setText("Drowsiness");
-
-                    progressBar.setVisibility(View.INVISIBLE);
-                    cardView.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            cardView.setVisibility(View.VISIBLE);
+                            newScan.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    //drugCommonSymptoms = extras.getString("drugCommonSymptoms");
+                    //drugSideEffects = extras.getString("drugSideEffects");
+                } catch (JSONException jsonException) {
+                    Log.d("Exception ",  jsonException.getMessage());
                 }
-            });
-        }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.d("Error", error.getMessage());
+
+            }
+        });
+
+        Log.d("Started request", "true");
+        jsonRequest.setRetryPolicy(
+                new DefaultRetryPolicy(20000, 0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(jsonRequest);
     }
 }

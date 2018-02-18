@@ -4,4 +4,5 @@
     <string name="dosage"/>
     <string name="common_symptoms"/>
     <string name="side_effects"/>
+    <string name="scan_medicine"> Scan Medicine</string>
 </resources>
