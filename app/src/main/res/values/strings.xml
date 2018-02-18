@@ -21,4 +21,6 @@
     <string name="adult_dosage_label"> Adult Dosage:</string>
     <string name="child_dosage_label"> Child Dosage:</string>
     <string name="contraindications_label"> Avoid this medication if: </string>
+    <string name="register_pill">I took this Pill</string>
+    <string name="symptomsLabel">Used For:</string>
 </resources>
