@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -24,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,13 +35,14 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 public class MedInfoDisplayActivity extends AppCompatActivity {
     private String drugDosage;
     private String drugChildDosage;
-    //private String drugCommonSymptoms;
+    private String drugCommonSymptoms;
     //private String drugSideEffects;
     private String drugContraindications;
     TextView medicineNameView;
     TextView drugDosageView;
     TextView drugCommonSymptomsView;
     TextView drugSideEffectsView;
+    TextView drugChildDosages;
     ProgressBar progressBar;
     CardView cardView;
     RequestQueue queue;
@@ -47,6 +50,8 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
     String drugRequested;
     Button newScan;
     String correctDrugName = "";
+    Button pillTaken;
+    private RelativeLayout mRelativeLayout;
 
     // Hook onto the UI elements else it will throw a null pointer error further down
     @Override
@@ -60,6 +65,9 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.dataFetch);
         cardView = (CardView) findViewById(R.id.medInfo);
         newScan = (Button) findViewById(R.id.scanButton);
+        pillTaken = (Button) findViewById(R.id.pillButton);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.content);
+        drugChildDosages = (TextView) findViewById(R.id.drugChildDosages);
     }
 
     // Receive the name of the medicine from the Google Vision API
@@ -101,17 +109,20 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
                         drugDosage = response.getString("Adult:");
                         drugChildDosage = response.getString("Children:");
                         drugContraindications = response.getString("Contraindications:");
+                        drugCommonSymptoms = response.getString("symptoms");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 medicineNameView.setText(correctDrugName);
                                 drugDosageView.setText(drugDosage);
-                                drugCommonSymptomsView.setText(drugChildDosage);
+                                drugChildDosages.setText(drugChildDosage);
+                                drugCommonSymptomsView.setText(drugCommonSymptoms);
                                 drugSideEffectsView.setText(drugContraindications);
 
                                 progressBar.setVisibility(View.INVISIBLE);
                                 cardView.setVisibility(View.VISIBLE);
                                 newScan.setVisibility(View.VISIBLE);
+                                pillTaken.setVisibility(View.VISIBLE);
                             }
                         });
                         //drugCommonSymptoms = extras.getString("drugCommonSymptoms");
@@ -139,19 +150,34 @@ public class MedInfoDisplayActivity extends AppCompatActivity {
             queue.add(jsonRequest);
 
         } else {
-            Snackbar.make(findViewById(R.id.medInfo), "Couldn't find anything", Snackbar.LENGTH_LONG);
+            Snackbar.make(mRelativeLayout, "Couldn't find anything", Snackbar.LENGTH_LONG);
             progressBar.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.VISIBLE);
             newScan.setVisibility(View.VISIBLE);
         }
 
 
+        final Intent mIntent = new Intent(MedInfoDisplayActivity.this, MainActivity.class);
+
         newScan.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent mIntent = new Intent(MedInfoDisplayActivity.this, MainActivity.class);
+
                 MedInfoDisplayActivity.this.startActivity(mIntent);
             }
         });
+
+        pillTaken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(mRelativeLayout, "Your consumption has been recorded", Snackbar.LENGTH_LONG);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        correctDrugName = "";
     }
 }
